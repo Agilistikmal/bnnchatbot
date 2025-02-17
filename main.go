@@ -7,6 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/agilistikmal/bnnchat/handler"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/mdp/qrterminal/v3"
@@ -19,7 +20,7 @@ import (
 func eventHandler(evt interface{}) {
 	switch v := evt.(type) {
 	case *events.Message:
-		fmt.Println("Received a message!", v.Message.GetConversation())
+		handler.MessageEvent(v)
 	}
 }
 
