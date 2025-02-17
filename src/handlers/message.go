@@ -16,7 +16,6 @@ func (h *Handler) MessageEvent(event any) {
 	}
 
 	content := e.Message.GetConversation()
-	log.Println(content)
 
 	if strings.Contains(content, "halo") {
 		err := h.SendTypingIndicator(e.Info.Sender.ToNonAD())
@@ -24,7 +23,12 @@ func (h *Handler) MessageEvent(event any) {
 			log.Println(err)
 		}
 
-		responseContent := "Halo"
+		menu, err := h.MenuService.FindMenu("welcome")
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		responseContent := menu.String()
 		log.Println(h.LastResponse[e.Info.Sender.ToNonAD()], e.Info.Sender.ToNonAD())
 
 		// Check Last Response

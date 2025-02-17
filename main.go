@@ -24,6 +24,7 @@ func main() {
 	db := database.NewDatabase()
 
 	questionService := services.NewQuestionService(db)
+	menuService := services.NewMenuService(db)
 
 	dbLog := waLog.Stdout("Database", "DEBUG", true)
 	container, err := sqlstore.New("postgres", viper.GetString("postgres.dsn"), dbLog)
@@ -36,7 +37,7 @@ func main() {
 	}
 	client := whatsmeow.NewClient(deviceStore, nil)
 
-	h := handlers.NewHandler(client, questionService)
+	h := handlers.NewHandler(client, questionService, menuService)
 
 	client.AddEventHandler(h.MessageEvent)
 
