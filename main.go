@@ -7,19 +7,26 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/agilistikmal/bnnchat/handler"
-	"github.com/joho/godotenv"
+	"github.com/agilistikmal/bnnchat/src/config"
+	"github.com/agilistikmal/bnnchat/src/database"
+	"github.com/agilistikmal/bnnchat/src/handlers"
+	"github.com/agilistikmal/bnnchat/src/services"
 	_ "github.com/lib/pq"
 	"github.com/mdp/qrterminal/v3"
+	"github.com/spf13/viper"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/store/sqlstore"
 	waLog "go.mau.fi/whatsmeow/util/log"
 )
 
 func main() {
-	godotenv.Load()
+	config.NewConfig()
+	db := database.NewDatabase()
+
+	questionService := services.NewQuestionService(db)
+
 	dbLog := waLog.Stdout("Database", "DEBUG", true)
-	container, err := sqlstore.New("postgres", os.Getenv("DSN"), dbLog)
+	container, err := sqlstore.New("postgres", viper.GetString("postgres.dsn"), dbLog)
 	if err != nil {
 		panic(err)
 	}
@@ -29,7 +36,7 @@ func main() {
 	}
 	client := whatsmeow.NewClient(deviceStore, nil)
 
-	h := handler.NewHandler(client)
+	h := handlers.NewHandler(client, questionService)
 
 	client.AddEventHandler(h.MessageEvent)
 

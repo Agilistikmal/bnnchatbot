@@ -1,4 +1,4 @@
-package handler
+package handlers
 
 import "go.mau.fi/whatsmeow/types"
 
