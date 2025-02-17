@@ -13,16 +13,8 @@ import (
 	"github.com/mdp/qrterminal/v3"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/store/sqlstore"
-	"go.mau.fi/whatsmeow/types/events"
 	waLog "go.mau.fi/whatsmeow/util/log"
 )
-
-func eventHandler(evt interface{}) {
-	switch v := evt.(type) {
-	case *events.Message:
-		handler.MessageEvent(v)
-	}
-}
 
 func main() {
 	godotenv.Load()
@@ -35,9 +27,11 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	clientLog := waLog.Stdout("Client", "DEBUG", true)
-	client := whatsmeow.NewClient(deviceStore, clientLog)
-	client.AddEventHandler(eventHandler)
+	client := whatsmeow.NewClient(deviceStore, nil)
+
+	h := handler.NewHandler(client)
+
+	client.AddEventHandler(h.MessageEvent)
 
 	if client.Store.ID == nil {
 		// No ID stored, new login
