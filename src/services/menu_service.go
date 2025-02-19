@@ -17,7 +17,7 @@ func NewMenuService(db *gorm.DB) *MenuService {
 
 func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 	var menus []*models.Menu
-	err := s.DB.Find(&menus).Error
+	err := s.DB.Preload("Options.Menu").Find(&menus).Error
 	if err != nil {
 		return nil, err
 	}
@@ -25,12 +25,32 @@ func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 	return menus, nil
 }
 
-func (s *MenuService) FindMenu(id string) (*models.Menu, error) {
+func (s *MenuService) FindMenuByID(id int) (*models.Menu, error) {
 	var menu *models.Menu
-	err := s.DB.Take(&menu, "id = ?", id).Error
+	err := s.DB.Preload("Options.Menu").Take(&menu, "id = ?", id).Error
 	if err != nil {
 		return nil, err
 	}
 
 	return menu, nil
+}
+
+func (s *MenuService) FindMenuBySlug(slug string) (*models.Menu, error) {
+	var menu *models.Menu
+	err := s.DB.Preload("Options.Menu").Take(&menu, "slug = ?", slug).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return menu, nil
+}
+
+func (s *MenuService) FindOptionMenu(id int, position int) (*models.MenuOption, error) {
+	var menuOption *models.MenuOption
+	err := s.DB.Preload("Menu").Take(&menuOption, "id = ? AND position = ?", id, position).Error
+	if err != nil {
+		return nil, err
+	}
+
+	return menuOption, nil
 }

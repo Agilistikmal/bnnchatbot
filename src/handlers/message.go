@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"context"
-	"log"
+	"strconv"
 	"strings"
 
+	log "github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types/events"
 )
@@ -16,14 +17,16 @@ func (h *Handler) MessageEvent(event any) {
 	}
 
 	content := e.Message.GetConversation()
+	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
+	log.Info(content)
 
-	if strings.Contains(content, "halo") {
+	if lastResponse == "" {
 		err := h.SendTypingIndicator(e.Info.Sender.ToNonAD())
 		if err != nil {
-			log.Println(err)
+			log.Error(err)
 		}
 
-		menu, err := h.MenuService.FindMenu("welcome")
+		menu, err := h.MenuService.FindMenuBySlug("welcome")
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -44,5 +47,48 @@ func (h *Handler) MessageEvent(event any) {
 		}
 
 		h.LastResponse[e.Info.Sender.ToNonAD()] = responseContent
+	} else {
+		if strings.Contains(lastResponse, "*Menu*") {
+			err := h.SendTypingIndicator(e.Info.Sender.ToNonAD())
+			if err != nil {
+				log.Error(err)
+			}
+
+			optionNumber, err := strconv.Atoi(content)
+			if err != nil {
+				responseContent := "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
+				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+					Conversation: &responseContent,
+				})
+			}
+
+			menuID, err := h.GetResponseMenuID(lastResponse)
+			if err != nil {
+				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami"
+				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+					Conversation: &responseContent,
+				})
+				log.Error(err)
+			}
+
+			log.Info("ID:", menuID)
+			log.Info("Option Number:", optionNumber)
+
+			selectedMenu, err := h.MenuService.FindOptionMenu(menuID, optionNumber)
+			if err != nil {
+				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami"
+				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+					Conversation: &responseContent,
+				})
+				log.Error(err)
+			}
+
+			responseContent := selectedMenu.Menu.String()
+			h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+				Conversation: &responseContent,
+			})
+
+			h.LastResponse[e.Info.Sender.ToNonAD()] = responseContent
+		}
 	}
 }
