@@ -2,12 +2,14 @@ package handlers
 
 import (
 	"context"
+	"errors"
 	"strconv"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types/events"
+	"gorm.io/gorm"
 )
 
 func (h *Handler) MessageEvent(event any) {
@@ -65,14 +67,14 @@ func (h *Handler) MessageEvent(event any) {
 			menuID, err := h.GetResponseMenuID(lastResponse)
 			if err != nil {
 				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami"
+				if errors.Is(err, gorm.ErrRecordNotFound) {
+					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
+				}
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
 				})
 				log.Error(err)
 			}
-
-			log.Info("ID:", menuID)
-			log.Info("Option Number:", optionNumber)
 
 			selectedMenu, err := h.MenuService.FindOptionMenu(menuID, optionNumber)
 			if err != nil {
