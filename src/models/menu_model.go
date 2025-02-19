@@ -24,7 +24,7 @@ type MenuOption struct {
 func (m *Menu) String() string {
 	optionsText := ""
 	if len(m.Options) > 0 {
-		optionsText = "*Menu*\n"
+		optionsText = "\n*Menu*\n"
 		for _, option := range m.Options {
 			optionsText += fmt.Sprintf("> %d) %s\n", option.Position, option.SubMenu.Header)
 		}
