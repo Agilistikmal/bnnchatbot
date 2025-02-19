@@ -19,5 +19,5 @@ func TestFindMenus(t *testing.T) {
 	assert.Nil(t, err)
 
 	assert.NotNil(t, menus)
-	log.Println(menus[0].Options[0].Menu.Header)
+	log.Println(menus[0].Options[0].SubMenu.Header)
 }

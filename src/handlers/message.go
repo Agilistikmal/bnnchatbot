@@ -34,13 +34,6 @@ func (h *Handler) MessageEvent(event any) {
 		}
 
 		responseContent := menu.String()
-		log.Println(h.LastResponse[e.Info.Sender.ToNonAD()], e.Info.Sender.ToNonAD())
-
-		// Check Last Response
-		if h.LastResponse[e.Info.Sender.ToNonAD()] == "Halo" {
-			responseContent = "Saya sudah balas Halo"
-		}
-
 		_, err = h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 			Conversation: &responseContent,
 		})
@@ -66,10 +59,7 @@ func (h *Handler) MessageEvent(event any) {
 
 			menuID, err := h.GetResponseMenuID(lastResponse)
 			if err != nil {
-				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami"
-				if errors.Is(err, gorm.ErrRecordNotFound) {
-					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
-				}
+				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami."
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
 				})
@@ -78,14 +68,24 @@ func (h *Handler) MessageEvent(event any) {
 
 			selectedMenu, err := h.MenuService.FindOptionMenu(menuID, optionNumber)
 			if err != nil {
-				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami"
+				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami."
+				if errors.Is(err, gorm.ErrRecordNotFound) {
+					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
+				}
+
+				latitude := -7.8093277
+				longitude := 110.3666287
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
+					LocationMessage: &waE2E.LocationMessage{
+						DegreesLatitude:  &latitude,
+						DegreesLongitude: &longitude,
+					},
 				})
 				log.Error(err)
 			}
 
-			responseContent := selectedMenu.Menu.String()
+			responseContent := selectedMenu.SubMenu.String()
 			h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 				Conversation: &responseContent,
 			})

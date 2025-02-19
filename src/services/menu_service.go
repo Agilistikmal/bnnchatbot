@@ -27,7 +27,7 @@ func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 
 func (s *MenuService) FindMenuByID(id int) (*models.Menu, error) {
 	var menu *models.Menu
-	err := s.DB.Preload("Options.Menu").Take(&menu, "id = ?", id).Error
+	err := s.DB.Preload("Options.SubMenu").Order("Options.Position ASC").Take(&menu, "id = ?", id).Order("Options.Position ASC").Error
 	if err != nil {
 		return nil, err
 	}
@@ -37,7 +37,7 @@ func (s *MenuService) FindMenuByID(id int) (*models.Menu, error) {
 
 func (s *MenuService) FindMenuBySlug(slug string) (*models.Menu, error) {
 	var menu *models.Menu
-	err := s.DB.Preload("Options.Menu").Take(&menu, "slug = ?", slug).Error
+	err := s.DB.Preload("Options.SubMenu").Take(&menu, "slug = ?", slug).Order("Options.Position ASC").Error
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (s *MenuService) FindMenuBySlug(slug string) (*models.Menu, error) {
 
 func (s *MenuService) FindOptionMenu(id int, position int) (*models.MenuOption, error) {
 	var menuOption *models.MenuOption
-	err := s.DB.Preload("Menu").Take(&menuOption, "id = ? AND position = ?", id, position).Error
+	err := s.DB.Preload("SubMenu").Take(&menuOption, "menu_id = ? AND position = ?", id, position).Error
 	if err != nil {
 		return nil, err
 	}
