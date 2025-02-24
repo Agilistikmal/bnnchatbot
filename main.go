@@ -27,7 +27,6 @@ func main() {
 	db := database.NewDatabase()
 
 	log.Info("Loading services...")
-	questionService := services.NewQuestionService(db)
 	menuService := services.NewMenuService(db)
 
 	log.Info("Preparing whatsapp client...")
@@ -42,7 +41,7 @@ func main() {
 	}
 	client := whatsmeow.NewClient(deviceStore, nil)
 
-	h := handlers.NewHandler(client, questionService, menuService)
+	h := handlers.NewHandler(client, menuService)
 
 	client.AddEventHandler(h.MessageEvent)
 

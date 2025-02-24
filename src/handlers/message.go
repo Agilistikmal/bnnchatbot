@@ -73,14 +73,8 @@ func (h *Handler) MessageEvent(event any) {
 					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
 				}
 
-				latitude := -7.8093277
-				longitude := 110.3666287
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
-					LocationMessage: &waE2E.LocationMessage{
-						DegreesLatitude:  &latitude,
-						DegreesLongitude: &longitude,
-					},
 				})
 				log.Error(err)
 			}
@@ -89,6 +83,19 @@ func (h *Handler) MessageEvent(event any) {
 			h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 				Conversation: &responseContent,
 			})
+
+			if selectedMenu.SubMenu.Slug == "alamat" {
+				latitude := -7.8091363641595715
+				longitude := 110.36941817367556
+				caption := "BNNP DIY"
+				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+					LocationMessage: &waE2E.LocationMessage{
+						DegreesLatitude:  &latitude,
+						DegreesLongitude: &longitude,
+						Name:             &caption,
+					},
+				})
+			}
 
 			h.LastResponse[e.Info.Sender.ToNonAD()] = responseContent
 		}

@@ -2,6 +2,8 @@ package models
 
 import (
 	"fmt"
+
+	"github.com/agilistikmal/bnnchat/src/lib"
 )
 
 type Menu struct {
@@ -26,7 +28,7 @@ func (m *Menu) String() string {
 	if len(m.Options) > 0 {
 		optionsText = "\n*Menu*\n"
 		for _, option := range m.Options {
-			optionsText += fmt.Sprintf("> %d) %s\n", option.Position, option.SubMenu.Header)
+			optionsText += fmt.Sprintf("%d) %s\n", option.Position, option.SubMenu.Header)
 		}
 	}
 
@@ -34,5 +36,5 @@ func (m *Menu) String() string {
 		m.Header += "\n"
 	}
 
-	return fmt.Sprintf("%d // %s\n%s\n%s\n%s", m.ID, m.Header, optionsText, m.Content, m.Footer)
+	return fmt.Sprintf("%s\n%s\n%s\n%s // %s", m.Header, optionsText, m.Content, m.Footer, lib.EncodeBase62(m.ID))
 }
