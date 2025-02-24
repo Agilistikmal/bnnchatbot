@@ -46,8 +46,8 @@ func main() {
 		authController := controllers.NewAuthController()
 		dashboardController := controllers.NewDashboardController()
 
-		app.Get("/login", authController.Login)
-		app.Get("/register", authController.Register)
+		app.All("/login", authController.Login)
+		app.All("/register", authController.Register)
 		app.Get("/", dashboardController.Dashboard)
 
 		app.Listen(":3000")
