@@ -10,7 +10,7 @@ import (
 	"github.com/agilistikmal/bnnchat/src/database"
 	"github.com/agilistikmal/bnnchat/src/handlers"
 	"github.com/agilistikmal/bnnchat/src/services"
-	"github.com/agilistikmal/bnnchat/src/web"
+	"github.com/agilistikmal/bnnchat/src/web/controllers"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	_ "github.com/lib/pq"
@@ -43,9 +43,12 @@ func main() {
 			Views: views,
 		})
 
-		webHandler := web.NewWebHandler()
+		authController := controllers.NewAuthController()
+		dashboardController := controllers.NewDashboardController()
 
-		app.Get("/", webHandler.HomePage)
+		app.Get("/login", authController.Login)
+		app.Get("/register", authController.Register)
+		app.Get("/", dashboardController.Dashboard)
 
 		app.Listen(":3000")
 	}()
