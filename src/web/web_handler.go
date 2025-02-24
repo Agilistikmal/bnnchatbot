@@ -11,5 +11,5 @@ func NewWebHandler() *WebHandler {
 
 func (h *WebHandler) HomePage(ctx *fiber.Ctx) error {
 	binding := fiber.Map{}
-	return ctx.Render("home", binding)
+	return ctx.Render("pages/home/index", binding, "layouts/base")
 }
