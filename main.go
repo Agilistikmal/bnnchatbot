@@ -10,7 +10,9 @@ import (
 	"github.com/agilistikmal/bnnchat/src/database"
 	"github.com/agilistikmal/bnnchat/src/handlers"
 	"github.com/agilistikmal/bnnchat/src/services"
+	"github.com/agilistikmal/bnnchat/src/web"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/template/html/v2"
 	_ "github.com/lib/pq"
 	"github.com/mdp/qrterminal/v3"
 	log "github.com/sirupsen/logrus"
@@ -35,11 +37,15 @@ func main() {
 	// ---
 	go func() {
 		log.Info("Preparing web server...")
-		app := fiber.New()
+		views := html.New("./src/web/views", ".html")
 
-		app.Get("/", func(ctx *fiber.Ctx) error {
-			return ctx.SendString("Hello")
+		app := fiber.New(fiber.Config{
+			Views: views,
 		})
+
+		webHandler := web.NewWebHandler()
+
+		app.Get("/", webHandler.HomePage)
 
 		app.Listen(":3000")
 	}()
