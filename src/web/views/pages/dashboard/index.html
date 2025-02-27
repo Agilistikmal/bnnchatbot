@@ -1,4 +1,29 @@
-<div>
-    <h1>Hello World 12</h1>
-    <p class="bg-red-400">Asas</p>
+<div class="p-8">
+    <!-- Title -->
+    <div>
+        <h1 class="font-semibold text-xl">Dashboard</h1>
+        <p>Halaman admin BNN Chatbot DIY</p>
+    </div>
+    <!-- End Title -->
+
+    <!-- Daftar Menu -->
+    <div class="mt-5 p-5 bg-slate-100">
+        <div class="flex items-center gap-2">
+            <div class="font-semibold px-5 py-2 bg-blue-500 rounded-3xl text-white w-max">
+                <h1>
+                    Daftar Menu
+                </h1>
+                
+            </div>
+            <a href="/menu/add" class="text-blue-500 flex items-center gap-1">
+                <iconify-icon icon="material-symbols:add-box" width="24" height="24"></iconify-icon>
+                <span>Tambah</span>
+            </a>
+        </div>
+        
+        <div id="menu_part" hx-trigger="load" hx-get="/menu_part" class="mt-5">
+            <p>Loading...</p>
+        </div>
+    </div> 
+    <!-- End Daftar Menu -->
 </div>

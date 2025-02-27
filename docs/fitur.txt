@@ -1,0 +1,8 @@
+1. Bisa di beberapa komputer
+1.1. Mengamankan agar yang jadi server 1 komputer saja.
+1.2. Pilihan UI sebagai server atau admin saja.
+
+2. UI untuk balas chat
+2.1. Terbagi kategori
+2.2. Bisa lihat history message
+

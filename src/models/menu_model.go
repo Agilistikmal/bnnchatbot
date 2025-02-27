@@ -32,9 +32,13 @@ func (m *Menu) String() string {
 		}
 	}
 
-	if m.Content == "" {
-		m.Header += "\n"
+	if m.Content != "" {
+		m.Content = "\n" + m.Content
 	}
 
-	return fmt.Sprintf("%s\n%s\n%s\n%s // %s", m.Header, optionsText, m.Content, m.Footer, lib.EncodeBase62(m.ID))
+	if m.Footer != "" {
+		m.Footer = "\n" + m.Footer
+	}
+
+	return fmt.Sprintf("%s\n%s\n%s\n%s // %s", m.Header, m.Content, optionsText, m.Footer, lib.EncodeBase62(m.ID))
 }

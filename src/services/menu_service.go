@@ -17,7 +17,7 @@ func NewMenuService(db *gorm.DB) *MenuService {
 
 func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 	var menus []*models.Menu
-	err := s.DB.Preload("Options.Menu").Find(&menus).Error
+	err := s.DB.Preload("Options.SubMenu").Find(&menus).Error
 	if err != nil {
 		return nil, err
 	}
@@ -27,7 +27,7 @@ func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 
 func (s *MenuService) FindMenuByID(id int) (*models.Menu, error) {
 	var menu *models.Menu
-	err := s.DB.Preload("Options.SubMenu").Order("Options.Position ASC").Take(&menu, "id = ?", id).Order("Options.Position ASC").Error
+	err := s.DB.Preload("Options.SubMenu").Take(&menu, "id = ?", id).Order("Options.Position ASC").Error
 	if err != nil {
 		return nil, err
 	}
