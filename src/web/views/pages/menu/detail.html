@@ -1,5 +1,10 @@
 <div class="w-full max-w-screen-sm mx-auto p-8">
-    <form action="" method="post" class="p-8 rounded-2xl bg-slate-200">
+    <a href="/" class="flex items-center gap-2">
+        <iconify-icon icon="si:chevron-left-circle-fill" width="24" height="24"></iconify-icon>
+        <p>Kembali</p>
+    </a>
+    <form class="p-8 rounded-2xl bg-slate-200 mt-5">
+        <h1 class="font-semibold text-2xl text-center mb-5">Detail/Edit Menu</h1>
         <label for="slug">
             <p class="font-semibold">Kode</p>
             <input id="slug" name="slug" type="text" value="{{ .menu.Slug }}"
@@ -21,9 +26,10 @@
             placeholder="Masukkan footer/penutup" class="w-full border border-blue-900 px-5 py-2 rounded-2xl">{{ .menu.Footer }}</textarea>
         </label>
 
+        <div id="message"></div>
         <div class="flex items-center gap-2 mt-5">
-            <button class="px-5 py-2 rounded-2xl w-full bg-blue-500 font-semibold text-white">Save</button>
-            <button type="reset" class="px-5 py-2 rounded-2xl w-max bg-red-500 text-white">
+            <button hx-put="/menu/{{ .menu.ID }}" hx-target="#message" class="px-5 py-2 rounded-2xl w-full bg-blue-500 font-semibold text-white">Save</button>
+            <button type="reset" hx-delete="/menu/{{ .menu.ID }}" hx-target="#message" class="px-5 py-2 rounded-2xl w-max bg-red-500 text-white">
                 <iconify-icon icon="material-symbols:delete" width="16" height="16"></iconify-icon>
             </button>
         </div>

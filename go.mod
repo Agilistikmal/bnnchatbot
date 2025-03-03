@@ -4,8 +4,9 @@ go 1.24.0
 
 require (
 	github.com/gofiber/fiber/v2 v2.52.6
+	github.com/gofiber/template/html/v2 v2.1.3
 	github.com/lib/pq v1.10.9
-	github.com/mdp/qrterminal/v3 v3.2.0
+	github.com/mdp/qrterminal v1.0.1
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
 	github.com/stretchr/testify v1.10.0
@@ -20,7 +21,6 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/gofiber/template v1.8.3 // indirect
-	github.com/gofiber/template/html/v2 v2.1.3 // indirect
 	github.com/gofiber/utils v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/websocket v1.5.0 // indirect
@@ -60,7 +60,6 @@ require (
 	golang.org/x/net v0.35.0 // indirect
 	golang.org/x/sync v0.11.0 // indirect
 	golang.org/x/sys v0.30.0 // indirect
-	golang.org/x/term v0.29.0 // indirect
 	golang.org/x/text v0.22.0 // indirect
 	google.golang.org/protobuf v1.36.5 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
