@@ -7,6 +7,7 @@ import (
 	"github.com/agilistikmal/bnnchat/src/models"
 	"github.com/agilistikmal/bnnchat/src/services"
 	"github.com/gofiber/fiber/v2"
+	"github.com/sirupsen/logrus"
 )
 
 type MenuController struct {
@@ -39,7 +40,7 @@ func (c *MenuController) Add(ctx *fiber.Ctx) error {
 		if err != nil {
 			return ctx.SendString(fmt.Sprintf("Error: %v", err.Error()))
 		} else {
-			return ctx.SendString("Berhasil menambah data")
+			return ctx.SendString(fmt.Sprintf("Berhasil menambah data. <a href='/menu/%d' class='text-blue-500'>Lihat %s disini.</a>", menu.ID, menu.Slug))
 		}
 	default:
 		return ctx.Render("pages/menu/add", binding, "layouts/base")
@@ -53,8 +54,14 @@ func (c *MenuController) Detail(ctx *fiber.Ctx) error {
 		return ctx.SendString(fmt.Sprintf("Error Menu Detail: %v", err.Error()))
 	}
 
+	menus, err := c.MenuService.FindMenus()
+	if err != nil {
+		return ctx.SendString(fmt.Sprintf("Error Menu List: %v", err.Error()))
+	}
+
 	binding := fiber.Map{
-		"menu": menu,
+		"menu":  menu,
+		"menus": menus,
 	}
 
 	switch ctx.Method() {
@@ -86,4 +93,43 @@ func (c *MenuController) Detail(ctx *fiber.Ctx) error {
 	default:
 		return ctx.Render("pages/menu/detail", binding, "layouts/base")
 	}
+}
+
+func (c *MenuController) SubMenu(ctx *fiber.Ctx) error {
+	menuID, _ := strconv.Atoi(ctx.Params("menuID"))
+	menu, err := c.MenuService.FindMenuByID(menuID)
+	if err != nil {
+		return ctx.SendString(fmt.Sprintf("Error Menu Detail: %v", err.Error()))
+	}
+
+	switch ctx.Method() {
+	case fiber.MethodPost:
+		subMenuID, _ := strconv.Atoi(ctx.FormValue("sub_menu_id"))
+		subMenu, err := c.MenuService.FindMenuByID(subMenuID)
+		if err != nil {
+			return ctx.SendString(fmt.Sprintf("Error SubMenu Detail: %v", err.Error()))
+		}
+
+		option := &models.MenuOption{
+			MenuID:    menu.ID,
+			SubMenuID: subMenu.ID,
+		}
+		err = c.MenuService.DB.Create(&option).Error
+		if err != nil {
+			return ctx.SendString(fmt.Sprintf("Error Option Create: %v", err.Error()))
+		} else {
+			return ctx.SendString("Berhasil menambah opsi/sub menu")
+		}
+	case fiber.MethodDelete:
+		subMenuId, _ := strconv.Atoi(ctx.Params("subMenuId"))
+		subMenu, err := c.MenuService.FindMenuByID(subMenuId)
+		if err != nil {
+			return ctx.SendString(fmt.Sprintf("Error Menu Detail: %v", err.Error()))
+		}
+		logrus.Info(subMenu)
+	default:
+		return nil
+	}
+
+	return nil
 }

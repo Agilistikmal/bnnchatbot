@@ -14,9 +14,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/template/html/v2"
 	_ "github.com/lib/pq"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/mdp/qrterminal"
 	log "github.com/sirupsen/logrus"
-	"github.com/spf13/viper"
 	"go.mau.fi/whatsmeow"
 	"go.mau.fi/whatsmeow/store/sqlstore"
 	waLog "go.mau.fi/whatsmeow/util/log"
@@ -53,6 +53,7 @@ func main() {
 		app.Get("/menu_part", dashboardController.MenuPart)
 		app.All("/menu/add", menuController.Add)
 		app.All("/menu/:id", menuController.Detail)
+		app.All("/menu/:menuID/submenu", menuController.SubMenu)
 
 		app.Listen(":3000")
 	}()
@@ -64,7 +65,7 @@ func main() {
 	go func() {
 		log.Info("Preparing whatsapp client...")
 		dbLog := waLog.Stdout("Database", "DEBUG", true)
-		container, err := sqlstore.New("postgres", viper.GetString("postgres.dsn"), dbLog)
+		container, err := sqlstore.New("sqlite3", "file:data.db?_foreign_keys=on", dbLog)
 		if err != nil {
 			panic(err)
 		}
