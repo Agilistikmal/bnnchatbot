@@ -40,13 +40,27 @@
         <div class="p-8 rounded-2xl bg-slate-200 mt-5 h-max">
             <h1 class="font-semibold text-2xl text-center mb-5">Opsi/Sub Menu</h1>
             <div class="space-y-2">
-                {{ range $option := .menu.Options }}
+                {{ $length := len .menu.Options }}
+                {{ range $i, $option := .menu.Options }}
                     <div class="flex items-center gap-2 px-5 py-2 w-full rounded-2xl bg-black/10">
+                        <div>
+                            {{ if and (lt $i $length) (ne $i 0) }}
+                            <button class="cursor-pointer"><iconify-icon icon="mdi:chevron-up" width="24" height="24"></iconify-icon></button>
+                            {{ else }}
+                            <button class="text-black/25" disabled><iconify-icon icon="mdi:chevron-up" width="24" height="24"></iconify-icon></button>
+                            {{ end }}
+
+                            {{ if ne $i $length }}
+                            <button class="cursor-pointer"><iconify-icon icon="mdi:chevron-down" width="24" height="24"></iconify-icon></button>
+                            {{ else }}
+                            <button class="text-black/25" disabled><iconify-icon icon="mdi:chevron-down" width="24" height="24"></iconify-icon></button>
+                            {{ end }}
+                        </div>
                         <div class="w-full">
                             <h1 class="font-semibold text-sm">{{ $option.Position }}. {{ $option.SubMenu.Slug }}</h1>
                             <p class="text-xs">{{ $option.SubMenu.Header }}</p>
                         </div>
-                        <button type="reset" hx-delete="/option/{{ $option.ID }}" hx-trigger="click" class="px-5 py-2 rounded-2xl w-max bg-red-500 text-white">
+                        <button hx-delete="/menu/{{ $option.MenuID }}/submenu" hx-vals='{"sub_menu_id": {{ $option.SubMenu.ID }} }' class="px-5 py-2 rounded-2xl w-max bg-red-500 text-white">
                             <iconify-icon icon="material-symbols:delete" width="16" height="16"></iconify-icon>
                         </button>
                     </div>

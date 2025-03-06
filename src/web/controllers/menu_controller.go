@@ -7,7 +7,6 @@ import (
 	"github.com/agilistikmal/bnnchat/src/models"
 	"github.com/agilistikmal/bnnchat/src/services"
 	"github.com/gofiber/fiber/v2"
-	"github.com/sirupsen/logrus"
 )
 
 type MenuController struct {
@@ -118,18 +117,25 @@ func (c *MenuController) SubMenu(ctx *fiber.Ctx) error {
 		if err != nil {
 			return ctx.SendString(fmt.Sprintf("Error Option Create: %v", err.Error()))
 		} else {
+			ctx.Append("HX-Redirect", fmt.Sprintf("/menu/%d", menu.ID))
 			return ctx.SendString("Berhasil menambah opsi/sub menu")
 		}
 	case fiber.MethodDelete:
-		subMenuId, _ := strconv.Atoi(ctx.Params("subMenuId"))
+		subMenuId, _ := strconv.Atoi(ctx.FormValue("sub_menu_id"))
 		subMenu, err := c.MenuService.FindMenuByID(subMenuId)
 		if err != nil {
 			return ctx.SendString(fmt.Sprintf("Error Menu Detail: %v", err.Error()))
 		}
-		logrus.Info(subMenu)
+
+		var option *models.MenuOption
+		err = c.MenuService.DB.Delete(&option, "menu_id = ? and sub_menu_id = ?", menu.ID, subMenu.ID).Error
+		if err != nil {
+			return ctx.SendString(fmt.Sprintf("Error Delete SubMenu: %v", err.Error()))
+		}
+
+		ctx.Append("HX-Redirect", fmt.Sprintf("/menu/%d", menu.ID))
+		return ctx.SendString("Berhasil menghapus opsi/sub menu")
 	default:
 		return nil
 	}
-
-	return nil
 }
