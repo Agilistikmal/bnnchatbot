@@ -58,11 +58,14 @@
             </div>
             <div id="position_message"></div>
             <form class="px-5 py-2 border border-blue-900 rounded-2xl mt-5">
-                <select name="sub_menu_id" id="sub_menu_id" class="w-full px-5 py-2 outline-none">
-                    {{ range $menu := .menus }}
-                        <option value="{{ $menu.ID }}">{{ $menu.Header }}</option>
-                    {{ end }}
-                </select>
+                <div class="flex items-center gap-2">
+                    <input name="position" type="number" placeholder="1" required min="1" class="w-18 text-center">
+                    <select name="sub_menu_id" id="sub_menu_id" class="w-full px-5 py-2 outline-none">
+                        {{ range $menu := .menus }}
+                            <option value="{{ $menu.ID }}">{{ $menu.Slug }} - {{ $menu.Header }}</option>
+                        {{ end }}
+                    </select>
+                </div>
                 <div id="sub_menu_message"></div>
                 <button hx-post="/menu/{{ .menu.ID }}/submenu" hx-target="#sub_menu_message" class="mt-5 px-5 py-2 rounded-2xl w-full bg-blue-200 font-semibold text-blue-500">Tambah Opsi/Sub Menu</button>
             </form>

@@ -103,6 +103,7 @@ func (c *MenuController) SubMenu(ctx *fiber.Ctx) error {
 
 	switch ctx.Method() {
 	case fiber.MethodPost:
+		position, _ := strconv.Atoi(ctx.FormValue("position"))
 		subMenuID, _ := strconv.Atoi(ctx.FormValue("sub_menu_id"))
 		subMenu, err := c.MenuService.FindMenuByID(subMenuID)
 		if err != nil {
@@ -112,6 +113,7 @@ func (c *MenuController) SubMenu(ctx *fiber.Ctx) error {
 		option := &models.MenuOption{
 			MenuID:    menu.ID,
 			SubMenuID: subMenu.ID,
+			Position:  position,
 		}
 		err = c.MenuService.DB.Create(&option).Error
 		if err != nil {
@@ -167,7 +169,7 @@ func (c *MenuController) SubMenuPosition(ctx *fiber.Ctx) error {
 		if err != nil {
 			return ctx.SendString(fmt.Sprintf("Error Option Update: %v", err.Error()))
 		} else {
-			return ctx.SendString(fmt.Sprintf("Berhasil mengubah positi %s menjadi %d", subMenu.Slug, position))
+			return ctx.SendString(fmt.Sprintf("Berhasil mengubah posisi %s menjadi %d", subMenu.Slug, position))
 		}
 	default:
 		return nil
