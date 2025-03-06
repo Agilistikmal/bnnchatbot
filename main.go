@@ -54,6 +54,7 @@ func main() {
 		app.All("/menu/add", menuController.Add)
 		app.All("/menu/:id", menuController.Detail)
 		app.All("/menu/:menuID/submenu", menuController.SubMenu)
+		app.All("/menu/:menuID/submenu/position", menuController.SubMenuPosition)
 
 		app.Listen(":3000")
 	}()
