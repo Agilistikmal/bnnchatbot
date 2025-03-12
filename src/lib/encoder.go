@@ -1,9 +1,9 @@
 package lib
 
 import (
-	"bytes"
 	"encoding/base64"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 
@@ -30,14 +30,16 @@ func DecodeBase62(encoded string) int {
 	return result
 }
 
-func GenerateQRBase64(qrText string) (string, error) {
-	var buf bytes.Buffer
-	qr, _ := qrcode.Encode(qrText, qrcode.Medium, 256)
-	_, err := buf.Write(qr)
+func GenerateQRToFile(qrText, filePath string) error {
+	qr, err := qrcode.Encode(qrText, qrcode.Medium, 256)
 	if err != nil {
-		return "", err
+		return err
 	}
 
-	base64Img := base64.StdEncoding.EncodeToString(buf.Bytes())
-	return "data:image/png;base64," + base64Img, nil
+	err = os.WriteFile(filePath, qr, 0644)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

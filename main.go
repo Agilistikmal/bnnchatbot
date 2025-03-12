@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"html/template"
 	"os"
 	"os/signal"
 	"syscall"
@@ -66,12 +67,12 @@ func main() {
 			}
 			for evt := range qrChan {
 				if evt.Event == "code" {
-					qrCodeBase64, _ := lib.GenerateQRBase64(evt.Code)
-					lib.QRCodeBase64 = qrCodeBase64
+					lib.GenerateQRToFile(evt.Code, "./assets/qr.png")
 					qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 					log.Info("Scan QR Code on Link Device Whatsapp")
 				} else {
-					log.Info("Login event ::", evt.Event)
+					log.Info("Login event ", evt.Event)
+					os.Remove("./assets/qr.png")
 				}
 			}
 		} else {
@@ -80,6 +81,7 @@ func main() {
 				log.Fatal("Login from session error ::", err.Error())
 			}
 			log.Info("Login from session")
+			os.Remove("./assets/qr.png")
 		}
 	}()
 
@@ -89,6 +91,9 @@ func main() {
 	go func() {
 		log.Info("Preparing web server...")
 		views := html.New("./views", ".html")
+		views.AddFunc("safeHTML", func(s string) template.HTML {
+			return template.HTML(s)
+		})
 
 		app := fiber.New(fiber.Config{
 			Views: views,
