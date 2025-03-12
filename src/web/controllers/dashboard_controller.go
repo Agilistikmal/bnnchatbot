@@ -43,3 +43,8 @@ func (c *DashboardController) ChatPart(ctx *fiber.Ctx) error {
 	}
 	return ctx.Render("pages/dashboard/chat_part", binding, "layouts/base")
 }
+
+func (c *DashboardController) Logout(ctx *fiber.Ctx) error {
+	c.WAClient.Store.DeleteAllSessions()
+	return ctx.Redirect("/")
+}
