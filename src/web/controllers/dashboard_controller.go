@@ -45,6 +45,6 @@ func (c *DashboardController) ChatPart(ctx *fiber.Ctx) error {
 }
 
 func (c *DashboardController) Logout(ctx *fiber.Ctx) error {
-	c.WAClient.Store.DeleteAllSessions()
-	return ctx.Redirect("/")
+	c.WAClient.Logout()
+	return ctx.SendString("Berhasil Keluar WhatsApp")
 }
