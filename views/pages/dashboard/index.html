@@ -7,8 +7,22 @@
     <!-- End Title -->
 
     <!-- QRCode -->
-    <img src="/assets/qr.png">
+    {{ if .waID }}
+        <p>WhatsApp {{ .waID }}</p>
+        <button hx-post="/logout" class="text-red-500 underline cursor-pointer">Keluar WhatsApp</button>
+    {{ else }}
+        <h2 class="font-semibold">WhatsApp belum tersambung</h2>
+        <p>Scan QR Code WhatsApp dibawah ini untuk masuk ke nomor WhatsApp</p>
+        <a href="/" class="block px-3 py-1 rounded-2xl bg-green-500 w-max cursor-pointer">Sudah Login? Klik untuk refresh</a>
+        <div hx-get="/qrcode" hx-trigger="load"></div>
+    {{ end }}
     <!-- End QRCode -->
+
+    <!-- Daftar Bantuan -->
+    <div id="help_part" hx-trigger="load" hx-get="/help_part" class="mt-5">
+        <p>Loading...</p>
+    </div>
+    <!-- End Daftar Bantuan -->
 
     <!-- Daftar Menu -->
     <div class="mt-5 p-5 bg-slate-100">

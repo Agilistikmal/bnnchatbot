@@ -1,0 +1,19 @@
+<div class="space-y-4">
+    {{ range $help := .helps }}
+        <div class="px-5 py-2 rounded-2xl bg-black/5 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+                <div>
+                    <img src="{{ $help.AvatarURL }}" alt="" class="w-12 h-12">
+                </div>
+                <div>
+                    <h1 class="truncate font-semibold text-sm text-black/70">{{ $help.Name }}</h1>
+                    <p class="truncate font-semibold">{{ $help.Phone }}</p>
+                    <p class="truncate">{{ $help.DisplayTime }}</p>
+                </div>
+            </div>
+            <div>
+                <a href="/help/{{ $help.JID }}" class="px-5 py-2 bg-green-500 text-white">Balas</a>
+            </div>
+        </div>
+    {{ end }}
+</div>

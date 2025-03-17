@@ -5,7 +5,9 @@ import (
 	"errors"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/agilistikmal/bnnchat/src/models"
 	log "github.com/sirupsen/logrus"
 	"go.mau.fi/whatsmeow/proto/waE2E"
 	"go.mau.fi/whatsmeow/types/events"
@@ -19,6 +21,14 @@ func (h *Handler) MessageEvent(event any) {
 	}
 
 	if e.Info.Sender.IsBot() {
+		return
+	}
+
+	if e.Info.Sender.ToNonAD() == h.Client.Store.ID.ToNonAD() {
+		return
+	}
+
+	if e.Message.GetConversation() == "" {
 		return
 	}
 
@@ -86,7 +96,26 @@ func (h *Handler) MessageEvent(event any) {
 
 			}
 
-			h.LastResponse[e.Info.Sender.ToNonAD()] = responseContent
+			profilePicture, err := h.Client.GetProfilePictureInfo(e.Info.Sender.ToNonAD(), nil)
+			if err != nil {
+				responseContent = "Terjadi kesalahan saat menghubungkan ke tim kami. Mohon coba lagi."
+				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+					Conversation: &responseContent,
+				})
+			}
+
+			help := &models.Help{
+				JID:         e.Info.Sender.ToNonAD().String(),
+				Phone:       strings.Split(e.Info.Sender.ToNonAD().String(), "@")[0],
+				Name:        e.Info.PushName,
+				AvatarURL:   profilePicture.URL,
+				DisplayTime: time.Now().Format("02 Jan 2006 15:04:05"),
+				CreatedAt:   time.Now(),
+			}
+
+			h.DB.Save(help)
+
+			h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
 			return
 		}
 
@@ -98,7 +127,7 @@ func (h *Handler) MessageEvent(event any) {
 
 			optionNumber, err := strconv.Atoi(content)
 			if err != nil {
-				responseContent := "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
+				responseContent := "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau ketik *hubungi tim* untuk terhubung ke tim kami."
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
 				})
@@ -112,6 +141,24 @@ func (h *Handler) MessageEvent(event any) {
 					Conversation: &responseContent,
 				})
 				log.Error(err)
+
+				profilePicture, err := h.Client.GetProfilePictureInfo(e.Info.Sender.ToNonAD(), nil)
+				if err != nil {
+					responseContent = "Terjadi kesalahan saat menghubungkan ke tim kami. Mohon coba lagi."
+					h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+						Conversation: &responseContent,
+					})
+				}
+
+				help := &models.Help{
+					JID:       e.Info.Sender.ToNonAD().String(),
+					Name:      e.Info.PushName,
+					AvatarURL: profilePicture.URL,
+					CreatedAt: time.Now(),
+				}
+
+				h.DB.Save(help)
+
 				h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
 				return
 			}
@@ -120,13 +167,31 @@ func (h *Handler) MessageEvent(event any) {
 			if err != nil {
 				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami."
 				if errors.Is(err, gorm.ErrRecordNotFound) {
-					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
+					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau ketik *hubungi tim* untuk terhubung ke tim kami."
 				}
 
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
 				})
 				log.Error(err)
+
+				profilePicture, err := h.Client.GetProfilePictureInfo(e.Info.Sender.ToNonAD(), nil)
+				if err != nil {
+					responseContent = "Terjadi kesalahan saat menghubungkan ke tim kami. Mohon coba lagi."
+					h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+						Conversation: &responseContent,
+					})
+				}
+
+				help := &models.Help{
+					JID:       e.Info.Sender.ToNonAD().String(),
+					Name:      e.Info.PushName,
+					AvatarURL: profilePicture.URL,
+					CreatedAt: time.Now(),
+				}
+
+				h.DB.Save(help)
+
 				h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
 				return
 			}
@@ -135,13 +200,31 @@ func (h *Handler) MessageEvent(event any) {
 			if err != nil {
 				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami."
 				if errors.Is(err, gorm.ErrRecordNotFound) {
-					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau menunggu jawaban dari tim kami."
+					responseContent = "Maaf, opsi tersebut tidak tersedia. Silahkan coba lagi atau ketik *hubungi tim* untuk terhubung ke tim kami."
 				}
 
 				h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
 					Conversation: &responseContent,
 				})
 				log.Error(err)
+
+				profilePicture, err := h.Client.GetProfilePictureInfo(e.Info.Sender.ToNonAD(), nil)
+				if err != nil {
+					responseContent = "Terjadi kesalahan saat menghubungkan ke tim kami. Mohon coba lagi."
+					h.Client.SendMessage(context.Background(), e.Info.Sender.ToNonAD(), &waE2E.Message{
+						Conversation: &responseContent,
+					})
+				}
+
+				help := &models.Help{
+					JID:       e.Info.Sender.ToNonAD().String(),
+					Name:      e.Info.PushName,
+					AvatarURL: profilePicture.URL,
+					CreatedAt: time.Now(),
+				}
+
+				h.DB.Save(help)
+
 				h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
 				return
 			}

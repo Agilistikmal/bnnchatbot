@@ -16,7 +16,7 @@ func NewDatabase() *gorm.DB {
 		log.Fatal(err)
 	}
 
-	db.AutoMigrate(&models.Menu{}, &models.MenuOption{})
+	db.AutoMigrate(&models.Menu{}, &models.MenuOption{}, &models.Help{})
 
 	var menu *models.Menu
 	err = db.Take(&menu, "slug = ?", "welcome").Error

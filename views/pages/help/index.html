@@ -1,0 +1,25 @@
+<div class="p-8">
+    <!-- Title -->
+    <div>
+        <h1 class="font-semibold text-xl">Help</h1>
+        <p>Daftar orang yang membutuhkan bantuan tim</p>
+    </div>
+    <!-- End Title -->
+
+    <!-- Daftar Menu -->
+    <div class="mt-5 p-5 bg-slate-100">
+        <div class="flex items-center gap-2">
+            <div class="font-semibold px-5 py-2 bg-red-500 rounded-3xl text-white w-max">
+                <h1>
+                    Daftar Bantuan Belum Dibaca
+                </h1>
+                
+            </div>
+        </div>
+        
+        <div id="help_part" hx-trigger="load" hx-get="/help_part" class="mt-5">
+            <p>Loading...</p>
+        </div>
+    </div> 
+    <!-- End Daftar Menu -->
+</div>

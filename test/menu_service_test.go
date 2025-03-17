@@ -4,14 +4,12 @@ import (
 	"log"
 	"testing"
 
-	"github.com/agilistikmal/bnnchat/src/config"
 	"github.com/agilistikmal/bnnchat/src/database"
 	"github.com/agilistikmal/bnnchat/src/services"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestFindMenus(t *testing.T) {
-	config.NewConfig()
 	db := database.NewDatabase()
 	s := services.NewMenuService(db)
 

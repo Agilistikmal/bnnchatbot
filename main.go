@@ -2,13 +2,14 @@ package main
 
 import (
 	"context"
-	"html/template"
+	"embed"
+	"io/fs"
+	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	"github.com/agilistikmal/bnnchat/src/config"
 	"github.com/agilistikmal/bnnchat/src/database"
 	"github.com/agilistikmal/bnnchat/src/handlers"
 	"github.com/agilistikmal/bnnchat/src/lib"
@@ -26,11 +27,18 @@ import (
 	waLog "go.mau.fi/whatsmeow/util/log"
 )
 
+//go:embed assets/*
+var assetsFS embed.FS
+
+//go:embed views/**/*
+var viewsFS embed.FS
+
 func main() {
 	log.Info("Starting...")
 
-	log.Info("Loading config and database...")
-	config.NewConfig()
+	os.Mkdir("public", 0755)
+
+	log.Info("Loading database...")
 	db := database.NewDatabase()
 
 	log.Info("Loading services...")
@@ -54,7 +62,7 @@ func main() {
 		}
 		client = whatsmeow.NewClient(deviceStore, nil)
 
-		h := handlers.NewHandler(client, menuService)
+		h := handlers.NewHandler(client, db, menuService)
 
 		client.AddEventHandler(h.MessageEvent)
 
@@ -67,12 +75,12 @@ func main() {
 			}
 			for evt := range qrChan {
 				if evt.Event == "code" {
-					lib.GenerateQRToFile(evt.Code, "./assets/qr.png")
+					lib.GenerateQRToFile(evt.Code, "./public/qr.png")
 					qrterminal.GenerateHalfBlock(evt.Code, qrterminal.L, os.Stdout)
 					log.Info("Scan QR Code on Link Device Whatsapp")
 				} else {
 					log.Info("Login event ", evt.Event)
-					os.Remove("./assets/qr.png")
+					os.Remove("./public/qr.png")
 				}
 			}
 		} else {
@@ -81,7 +89,7 @@ func main() {
 				log.Fatal("Login from session error ::", err.Error())
 			}
 			log.Info("Login from session")
-			os.Remove("./assets/qr.png")
+			os.Remove("./public/qr.png")
 		}
 	}()
 
@@ -90,19 +98,38 @@ func main() {
 	// ---
 	go func() {
 		log.Info("Preparing web server...")
-		views := html.New("./views", ".html")
-		views.AddFunc("safeHTML", func(s string) template.HTML {
-			return template.HTML(s)
-		})
+
+		for client == nil {
+			log.Info("Waiting for WhatsApp client to be ready...")
+			time.Sleep(1 * time.Second)
+		}
+
+		subFS, err := fs.Sub(viewsFS, "views")
+		if err != nil {
+			log.Fatal("Gagal membuat sub-FS:", err)
+		}
+		views := html.NewFileSystem(http.FS(subFS), ".html")
 
 		app := fiber.New(fiber.Config{
 			Views: views,
 		})
 
-		app.Static("/assets", "./assets")
+		app.Static("/public", "./public")
+
+		app.Get("/assets/*", func(c *fiber.Ctx) error {
+			filePath := c.Params("*")
+			file, err := assetsFS.Open("assets/" + filePath)
+			if err != nil {
+				return c.SendStatus(fiber.StatusNotFound)
+			}
+			defer file.Close()
+
+			return c.SendFile("assets/" + filePath)
+		})
 
 		dashboardController := controllers.NewDashboardController(client, menuService)
 		menuController := controllers.NewMenuController(menuService)
+		helpController := controllers.NewHelpController(db)
 
 		app.Get("/", dashboardController.Dashboard)
 		app.Get("/menu_part", dashboardController.MenuPart)
@@ -111,6 +138,10 @@ func main() {
 		app.All("/menu/:menuID/submenu", menuController.SubMenu)
 		app.All("/menu/:menuID/submenu/position", menuController.SubMenuPosition)
 
+		app.All("/help_part", helpController.HelpPart)
+		app.Delete("/help/:jid", helpController.Delete)
+
+		app.Get("/qrcode", dashboardController.QrCode)
 		app.Post("/logout", dashboardController.Logout)
 
 		app.Listen(":3000")
@@ -118,12 +149,16 @@ func main() {
 
 	c := make(chan os.Signal, 1)
 
+	//
+	// Webview
+	//
 	go func(exitChan chan os.Signal) {
 		for client == nil {
 			log.Info("Waiting for WhatsApp client to be ready...")
 			time.Sleep(1 * time.Second)
 		}
-		w := webview.New(true)
+
+		w := webview.New(false)
 		defer w.Destroy()
 		w.SetTitle("BNN Chatbot Dashboard")
 		w.SetSize(1024, 768, webview.HintNone)
