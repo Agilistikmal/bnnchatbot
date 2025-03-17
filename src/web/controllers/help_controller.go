@@ -31,10 +31,11 @@ func (c *HelpController) HelpPart(ctx *fiber.Ctx) error {
 
 func (c *HelpController) Delete(ctx *fiber.Ctx) error {
 	jid := ctx.Params("jid")
+
 	err := c.DB.Where("j_id = ?", jid).Delete(&models.Help{}).Error
 	if err != nil {
 		return ctx.SendString("Error: " + err.Error())
 	}
 
-	return ctx.Redirect("/")
+	return ctx.SendString("Success: " + jid)
 }

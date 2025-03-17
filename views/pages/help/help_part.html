@@ -8,6 +8,9 @@
     </div>
     
     <p class="text-sm text-black/70 mt-5">Terakhir diperbarui: {{ .lastRefresh }}</p>
+    {{ if eq (len .helps) 0 }}
+        <p class="text-sm text-black/70 mt-5 italic">Belum ada pesan masuk</p>
+    {{ end }}
     <div class="space-y-4">
         {{ range $help := .helps }}
             <div class="px-5 py-2 rounded-2xl bg-black/5 flex items-center justify-between gap-2">
@@ -24,7 +27,8 @@
                     </div>
                 </div>
                 <div>
-                    <a href="/help/{{ $help.JID }}" class="px-5 py-2 bg-green-500 text-white">Balas</a>
+                    <button hx-delete="/help/{{ $help.JID }}" hx-trigger="click" class="px-5 py-2 bg-red-500 text-white">Hapus</button>
+                    <button hx-delete="/help/{{ $help.JID }}" hx-trigger="click" hx-on::after-request="window.open('https://wa.me/{{ $help.Phone }}', '_blank')" class="px-5 py-2 bg-green-500 text-white">Balas</button>
                 </div>
             </div>
         {{ end }}
