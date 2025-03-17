@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"time"
+
 	"github.com/agilistikmal/bnnchat/src/models"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
@@ -21,7 +23,8 @@ func (c *HelpController) HelpPart(ctx *fiber.Ctx) error {
 	c.DB.Find(&helps)
 
 	binding := fiber.Map{
-		"helps": helps,
+		"helps":       helps,
+		"lastRefresh": time.Now().Format("15:04:05"),
 	}
 	return ctx.Render("pages/help/help_part", binding)
 }

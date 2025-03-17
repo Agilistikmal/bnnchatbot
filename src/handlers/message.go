@@ -151,10 +151,12 @@ func (h *Handler) MessageEvent(event any) {
 				}
 
 				help := &models.Help{
-					JID:       e.Info.Sender.ToNonAD().String(),
-					Name:      e.Info.PushName,
-					AvatarURL: profilePicture.URL,
-					CreatedAt: time.Now(),
+					JID:         e.Info.Sender.ToNonAD().String(),
+					Phone:       strings.Split(e.Info.Sender.ToNonAD().String(), "@")[0],
+					Name:        e.Info.PushName,
+					AvatarURL:   profilePicture.URL,
+					DisplayTime: time.Now().Format("02 Jan 2006 15:04:05"),
+					CreatedAt:   time.Now(),
 				}
 
 				h.DB.Save(help)
@@ -184,10 +186,12 @@ func (h *Handler) MessageEvent(event any) {
 				}
 
 				help := &models.Help{
-					JID:       e.Info.Sender.ToNonAD().String(),
-					Name:      e.Info.PushName,
-					AvatarURL: profilePicture.URL,
-					CreatedAt: time.Now(),
+					JID:         e.Info.Sender.ToNonAD().String(),
+					Phone:       strings.Split(e.Info.Sender.ToNonAD().String(), "@")[0],
+					Name:        e.Info.PushName,
+					AvatarURL:   profilePicture.URL,
+					DisplayTime: time.Now().Format("02 Jan 2006 15:04:05"),
+					CreatedAt:   time.Now(),
 				}
 
 				h.DB.Save(help)
@@ -217,10 +221,12 @@ func (h *Handler) MessageEvent(event any) {
 				}
 
 				help := &models.Help{
-					JID:       e.Info.Sender.ToNonAD().String(),
-					Name:      e.Info.PushName,
-					AvatarURL: profilePicture.URL,
-					CreatedAt: time.Now(),
+					JID:         e.Info.Sender.ToNonAD().String(),
+					Phone:       strings.Split(e.Info.Sender.ToNonAD().String(), "@")[0],
+					Name:        e.Info.PushName,
+					AvatarURL:   profilePicture.URL,
+					DisplayTime: time.Now().Format("02 Jan 2006 15:04:05"),
+					CreatedAt:   time.Now(),
 				}
 
 				h.DB.Save(help)
