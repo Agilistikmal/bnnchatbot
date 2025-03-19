@@ -158,6 +158,8 @@ func main() {
 			time.Sleep(1 * time.Second)
 		}
 
+		lib.WaitForServer("http://localhost:3000")
+
 		w := webview.New(false)
 		defer w.Destroy()
 		w.SetTitle("BNN Chatbot Dashboard")
