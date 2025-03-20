@@ -34,7 +34,6 @@ func (h *Handler) MessageEvent(event any) {
 
 	content := e.Message.GetConversation()
 	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
-	log.Info(content)
 
 	if lastResponse == "" {
 		err := h.SendTypingIndicator(e.Info.Sender.ToNonAD())
@@ -165,6 +164,7 @@ func (h *Handler) MessageEvent(event any) {
 				return
 			}
 
+			log.Info(menuID, optionNumber, lastResponse)
 			selectedMenu, err := h.MenuService.FindOptionMenu(menuID, optionNumber)
 			if err != nil {
 				responseContent := "Maaf, terjadi kesalahan. Saya akan hubungkan ke tim kami."

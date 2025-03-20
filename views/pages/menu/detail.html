@@ -1,8 +1,8 @@
 <div class="w-full max-w-screen-xl mx-auto p-8">
-    <a href="/" class="flex items-center gap-2">
+    <button hx-on:click="window.history.back()" class="flex items-center gap-2 cursor-pointer">
         <iconify-icon icon="si:chevron-left-circle-fill" width="24" height="24"></iconify-icon>
         <p>Kembali</p>
-    </a>
+    </button>
     <div class="grid grid-cols-2 gap-4">
 
         <form class="p-8 rounded-2xl bg-slate-200 mt-5 h-max">
@@ -40,14 +40,16 @@
         <div class="p-8 rounded-2xl bg-slate-200 mt-5 h-max">
             <h1 class="font-semibold text-2xl text-center mb-5">Opsi/Sub Menu</h1>
             <div class="space-y-2">
-                {{ $length := len .menu.Options }}
+                {{ if eq (len .menu.Options) 0 }}
+                    <p class="text-center text-gray-500">Belum ada opsi</p>
+                {{ end }}
                 {{ range $i, $option := .menu.Options }}
                     <div class="flex items-center gap-2 px-5 py-2 w-full rounded-2xl bg-black/10">
                         <div>
                             <input name="position" hx-target="#position_message" hx-trigger="change" hx-put="/menu/{{ $option.MenuID }}/submenu/position" hx-vals='{"sub_menu_id": {{ $option.SubMenu.ID }}, "option_id": {{ $option.ID }} }' type="number" value="{{ $option.Position }}" placeholder="1" required min="1" class="w-18 text-center">
                         </div>
                         <div class="w-full">
-                            <h1 class="font-semibold text-sm">{{ $option.SubMenu.Slug }}</h1>
+                            <a href="/menu/{{ $option.SubMenu.ID }}" class="font-semibold text-blue-400 underline text-sm">{{ $option.SubMenu.Slug }}</a>
                             <p class="text-xs">{{ $option.SubMenu.Header }}</p>
                         </div>
                         <button hx-delete="/menu/{{ $option.MenuID }}/submenu" hx-vals='{"sub_menu_id": {{ $option.SubMenu.ID }} }' class="px-5 py-2 rounded-2xl w-max bg-red-500 text-white">

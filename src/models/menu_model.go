@@ -40,5 +40,5 @@ func (m *Menu) String() string {
 		m.Footer = "\n" + m.Footer
 	}
 
-	return fmt.Sprintf("%s\n%s\n%s\n%s // %s", m.Header, m.Content, optionsText, m.Footer, lib.EncodeBase62(m.ID))
+	return fmt.Sprintf("%s\n%s\n%s\n%s //// %s", m.Header, m.Content, optionsText, m.Footer, lib.EncodeBase62(m.ID))
 }

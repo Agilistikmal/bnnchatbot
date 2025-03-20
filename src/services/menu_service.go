@@ -1,6 +1,8 @@
 package services
 
 import (
+	"sort"
+
 	"github.com/agilistikmal/bnnchat/src/models"
 	"gorm.io/gorm"
 )
@@ -22,6 +24,12 @@ func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 		return nil, err
 	}
 
+	for _, menu := range menus {
+		sort.Slice(menu.Options, func(i, j int) bool {
+			return menu.Options[i].Position < menu.Options[j].Position
+		})
+	}
+
 	return menus, nil
 }
 
@@ -32,6 +40,10 @@ func (s *MenuService) FindMenuByID(id int) (*models.Menu, error) {
 		return nil, err
 	}
 
+	sort.Slice(menu.Options, func(i, j int) bool {
+		return menu.Options[i].Position < menu.Options[j].Position
+	})
+
 	return menu, nil
 }
 
@@ -41,6 +53,10 @@ func (s *MenuService) FindMenuBySlug(slug string) (*models.Menu, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	sort.Slice(menu.Options, func(i, j int) bool {
+		return menu.Options[i].Position < menu.Options[j].Position
+	})
 
 	return menu, nil
 }

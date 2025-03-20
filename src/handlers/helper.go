@@ -13,7 +13,7 @@ func (h *Handler) SendTypingIndicator(jid types.JID) error {
 }
 
 func (h *Handler) GetResponseMenuID(text string) (int, error) {
-	splitted := strings.Split(text, "//")
+	splitted := strings.Split(text, "////")
 	if len(splitted) < 1 {
 		return 0, fmt.Errorf("ID Not found")
 	}

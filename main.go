@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"embed"
+	"io"
 	"io/fs"
 	"net/http"
 	"os"
@@ -124,7 +125,13 @@ func main() {
 			}
 			defer file.Close()
 
-			return c.SendFile("assets/" + filePath)
+			// Baca isi file dan kirim ke response
+			data, err := io.ReadAll(file)
+			if err != nil {
+				return c.SendStatus(fiber.StatusInternalServerError)
+			}
+
+			return c.Send(data)
 		})
 
 		dashboardController := controllers.NewDashboardController(client, menuService)
