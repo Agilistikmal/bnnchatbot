@@ -32,6 +32,11 @@ func (h *Handler) MessageEvent(event any) {
 		return
 	}
 
+	if time.Since(e.Info.Timestamp) > time.Hour {
+		log.Info("Message is older than 1 hour, ignoring.")
+		return
+	}
+
 	content := e.Message.GetConversation()
 	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
 
