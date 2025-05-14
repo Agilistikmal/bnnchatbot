@@ -1,34 +1,66 @@
-<div class="w-full max-w-screen-sm mx-auto p-8">
-    <a href="/" class="flex items-center gap-2">
-        <iconify-icon icon="si:chevron-left-circle-fill" width="24" height="24"></iconify-icon>
-        <p>Kembali</p>
-    </a>
-    <form class="p-8 rounded-2xl bg-slate-200 mt-5">
-        <h1 class="font-semibold text-2xl text-center mb-5">Tambah Menu</h1>
-        <label for="slug">
-            <p class="font-semibold">Kode</p>
-            <input id="slug" name="slug" type="text"
-            placeholder="Masukkan kode huruf kecil tanpa spasi" class="w-full border border-blue-900 px-5 py-2 rounded-2xl" required>
-        </label>
-        <label for="header">
-            <p class="font-semibold">Header / Title</p>
-            <input id="header" name="header" type="text"
-            placeholder="Masukkan Header/Title/Judul" class="w-full border border-blue-900 px-5 py-2 rounded-2xl" required>
-        </label>
-        <label for="content">
-            <p class="font-semibold">Content</p>
-            <textarea name="content" id="content" rows="5"
-            placeholder="Masukkan konten" class="w-full border border-blue-900 px-5 py-2 rounded-2xl"></textarea>
-        </label>
-        <label for="footer">
-            <p class="font-semibold">Footer</p>
-            <textarea name="footer" id="footer" rows="5"
-            placeholder="Masukkan footer/penutup" class="w-full border border-blue-900 px-5 py-2 rounded-2xl"></textarea>
-        </label>
+<div class="min-h-screen bg-gray-50 py-8">
+    <div class="w-full max-w-2xl mx-auto px-4">
+        <button onclick="window.history.back()" 
+            class="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors duration-300">
+            <iconify-icon icon="mdi:arrow-left" width="24" height="24"></iconify-icon>
+            <span>Kembali</span>
+        </button>
+        
+        <div class="mt-6">
+            <div class="bg-white rounded-xl shadow-sm p-6 md:p-8">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="bg-blue-500 text-white p-2 rounded-lg">
+                        <iconify-icon icon="mdi:plus" width="24" height="24"></iconify-icon>
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-semibold text-gray-800">Tambah Menu Baru</h1>
+                </div>
 
-        <div id="message"></div>
-        <div class="flex items-center gap-2 mt-5">
-            <button hx-post="/menu/add" hx-target="#message" class="px-5 py-2 rounded-2xl w-full bg-blue-500 font-semibold text-white">Add</button>
+                <form class="space-y-6">
+                    <div class="space-y-4">
+                        <label class="block">
+                            <span class="text-gray-700 font-medium">Kode Menu</span>
+                            <input type="text" id="slug" name="slug" 
+                                class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                                placeholder="Masukkan kode (huruf kecil tanpa spasi)" required>
+                        </label>
+
+                        <label class="block">
+                            <span class="text-gray-700 font-medium">Header / Title</span>
+                            <input type="text" id="header" name="header"
+                                class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                                placeholder="Masukkan judul menu" required>
+                        </label>
+
+                        <label class="block">
+                            <span class="text-gray-700 font-medium">Content</span>
+                            <textarea id="content" name="content" rows="4"
+                                class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                                placeholder="Masukkan isi konten menu"></textarea>
+                        </label>
+
+                        <label class="block">
+                            <span class="text-gray-700 font-medium">Footer</span>
+                            <textarea id="footer" name="footer" rows="3"
+                                class="mt-1 block w-full px-4 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-300"
+                                placeholder="Masukkan footer/penutup menu (opsional)"></textarea>
+                        </label>
+                    </div>
+
+                    <div id="message"></div>
+
+                    <div class="flex items-center justify-end gap-3 pt-4">
+                        <button type="button" onclick="window.history.back()"
+                            class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors duration-300">
+                            Batal
+                        </button>
+                        <button type="submit" hx-post="/menu/add" hx-target="#message"
+                            class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 flex items-center gap-2">
+                            <iconify-icon icon="mdi:check" width="20" height="20"></iconify-icon>
+                            Simpan Menu
+                        </button>
+                    </div>
+                </form>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
