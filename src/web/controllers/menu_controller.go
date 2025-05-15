@@ -58,9 +58,16 @@ func (c *MenuController) Detail(ctx *fiber.Ctx) error {
 		return ctx.SendString(fmt.Sprintf("Error Menu List: %v", err.Error()))
 	}
 
+	// Dapatkan next position untuk form tambah sub menu
+	nextPosition, err := c.MenuService.GetLastPosition(id)
+	if err != nil {
+		nextPosition = 1 // fallback ke 1 jika terjadi error
+	}
+
 	binding := fiber.Map{
-		"menu":  menu,
-		"menus": menus,
+		"menu":         menu,
+		"menus":        menus,
+		"nextPosition": nextPosition,
 	}
 
 	switch ctx.Method() {

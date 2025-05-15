@@ -17,6 +17,19 @@ func NewMenuService(db *gorm.DB) *MenuService {
 	}
 }
 
+// GetLastPosition mengembalikan posisi terakhir dari opsi menu + 1
+func (s *MenuService) GetLastPosition(menuID int) (int, error) {
+	var lastPosition int
+	err := s.DB.Model(&models.MenuOption{}).
+		Where("menu_id = ?", menuID).
+		Select("COALESCE(MAX(position), 0)").
+		Scan(&lastPosition).Error
+	if err != nil {
+		return 0, err
+	}
+	return lastPosition + 1, nil
+}
+
 func (s *MenuService) FindMenus() ([]*models.Menu, error) {
 	var menus []*models.Menu
 	err := s.DB.Preload("Options.SubMenu").Find(&menus).Error
