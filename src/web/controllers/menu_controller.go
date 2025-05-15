@@ -82,13 +82,13 @@ func (c *MenuController) Detail(ctx *fiber.Ctx) error {
 			return ctx.SendString("Berhasil menyimpan data")
 		}
 	case fiber.MethodDelete:
-		err := c.MenuService.DB.Delete(&menu, "id = ?", menu.ID).Error
+		err := c.MenuService.DeleteMenu(menu.ID)
 		if err != nil {
 			return ctx.SendString(fmt.Sprintf("Error: %v", err.Error()))
-		} else {
-			ctx.Append("HX-Redirect", "/")
-			return ctx.SendString("Berhasil menghapus data")
 		}
+
+		ctx.Append("HX-Redirect", "/")
+		return ctx.SendString("Menu berhasil dihapus beserta semua opsi/sub menu terkait")
 	default:
 		return ctx.Render("pages/menu/detail", binding, "layouts/base")
 	}

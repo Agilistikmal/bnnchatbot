@@ -70,3 +70,26 @@ func (s *MenuService) FindOptionMenu(id int, position int) (*models.MenuOption, 
 
 	return menuOption, nil
 }
+
+// DeleteMenu menghapus menu beserta semua opsi/sub menu yang terkait
+func (s *MenuService) DeleteMenu(id int) error {
+	// Mulai transaksi database
+	return s.DB.Transaction(func(tx *gorm.DB) error {
+		// 1. Hapus semua opsi yang menggunakan menu ini sebagai sub-menu
+		if err := tx.Delete(&models.MenuOption{}, "sub_menu_id = ?", id).Error; err != nil {
+			return err
+		}
+
+		// 2. Hapus semua opsi yang dimiliki menu ini
+		if err := tx.Delete(&models.MenuOption{}, "menu_id = ?", id).Error; err != nil {
+			return err
+		}
+
+		// 3. Hapus menu itu sendiri
+		if err := tx.Delete(&models.Menu{}, "id = ?", id).Error; err != nil {
+			return err
+		}
+
+		return nil
+	})
+}
