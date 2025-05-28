@@ -146,6 +146,7 @@ func main() {
 		app.All("/menu/:menuID/submenu/position", menuController.SubMenuPosition)
 
 		app.All("/help_part", helpController.HelpPart)
+		app.Delete("/help/all", helpController.DeleteAll)
 		app.Delete("/help/:jid", helpController.Delete)
 
 		app.Get("/qrcode", dashboardController.QrCode)

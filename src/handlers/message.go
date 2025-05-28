@@ -20,6 +20,23 @@ func (h *Handler) MessageEvent(event any) {
 		return
 	}
 
+	content := e.Message.GetConversation()
+	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
+
+	// Check if sender is in contact, if yes ignore it
+	contactInfo, err := h.Client.Store.Contacts.GetContact(e.Info.Sender.ToNonAD())
+	if err == nil {
+		log.Info("Sender is in contact, ignoring. ", contactInfo.FullName)
+		return
+	}
+
+	// Check if sender is me
+	if e.Info.Sender.ToNonAD() == h.Client.Store.ID.ToNonAD() {
+		log.Info("Sender is me, ignoring.")
+		return
+	}
+
+	// Check if sender is bot
 	if e.Info.Sender.IsBot() {
 		return
 	}
@@ -36,9 +53,6 @@ func (h *Handler) MessageEvent(event any) {
 		log.Info("Message is older than 1 hour, ignoring.")
 		return
 	}
-
-	content := e.Message.GetConversation()
-	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
 
 	if lastResponse == "" {
 		err := h.SendTypingIndicator(e.Info.Sender.ToNonAD())

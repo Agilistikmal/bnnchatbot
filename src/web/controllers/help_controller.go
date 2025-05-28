@@ -39,3 +39,12 @@ func (c *HelpController) Delete(ctx *fiber.Ctx) error {
 
 	return ctx.SendString("Success: " + jid)
 }
+
+func (c *HelpController) DeleteAll(ctx *fiber.Ctx) error {
+	err := c.DB.Where("1 = 1").Delete(&models.Help{}).Error
+	if err != nil {
+		return ctx.SendString("Error: " + err.Error())
+	}
+
+	return ctx.SendString("Success")
+}
