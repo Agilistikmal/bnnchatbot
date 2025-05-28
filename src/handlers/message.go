@@ -26,12 +26,14 @@ func (h *Handler) MessageEvent(event any) {
 	// Check if sender is in contact, if yes ignore it
 	contactInfo, err := h.Client.Store.Contacts.GetContact(e.Info.Sender.ToNonAD())
 	if err == nil {
+		h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
 		log.Info("Sender is in contact, ignoring. ", contactInfo.FullName)
 		return
 	}
 
 	// Check if sender is me
 	if e.Info.Sender.ToNonAD() == h.Client.Store.ID.ToNonAD() {
+		h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
 		log.Info("Sender is me, ignoring.")
 		return
 	}
