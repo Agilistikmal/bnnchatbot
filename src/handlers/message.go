@@ -23,9 +23,11 @@ func (h *Handler) MessageEvent(event any) {
 	content := e.Message.GetConversation()
 	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
 
+	log.Info(lastResponse)
+
 	// Check if sender is me
 	if e.Info.Sender.ToNonAD() == h.Client.Store.ID.ToNonAD() {
-		h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
+		h.LastResponse[e.Info.Chat.ToNonAD()] = "HUBUNGI_TIM"
 		log.Info("Sender is me, ignoring.")
 		return
 	}
