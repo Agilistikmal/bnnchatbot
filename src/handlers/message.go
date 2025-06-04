@@ -23,19 +23,6 @@ func (h *Handler) MessageEvent(event any) {
 	content := e.Message.GetConversation()
 	lastResponse := h.LastResponse[e.Info.Sender.ToNonAD()]
 
-	// Check if sender is saved in my contact
-	contact, err := h.Client.Store.Contacts.GetContact(e.Info.Sender.ToNonAD())
-	if err != nil {
-		log.Error(err)
-		return
-	}
-
-	if contact.FullName != "" {
-		h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
-		log.Info("Sender is in contact, ignoring. ", e.Info.Sender.ToNonAD().String())
-		return
-	}
-
 	// Check if sender is me
 	if e.Info.Sender.ToNonAD() == h.Client.Store.ID.ToNonAD() {
 		h.LastResponse[e.Info.Sender.ToNonAD()] = "HUBUNGI_TIM"
